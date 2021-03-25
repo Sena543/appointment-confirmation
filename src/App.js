@@ -1,4 +1,4 @@
-import { makeStyles } from "@material-ui/core";
+import { makeStyles, Container } from "@material-ui/core";
 import "./App.css";
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 import Search from "./components/Search";
@@ -29,7 +29,6 @@ function App() {
 					</Route>
 				</Switch>
 			</BrowserRouter>
-
 			{/* </Container> */}
 		</ApolloProvider>
 	);

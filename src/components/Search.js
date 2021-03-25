@@ -4,7 +4,7 @@ import { Bounce } from "react-activity";
 import { Button, Card, makeStyles, TextField, Typography } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
 import "react-activity/dist/react-activity.css";
-import { Redirect, withRouter } from "react-router";
+import { withRouter } from "react-router";
 
 const GET_USER_ID = gql`
 	query($studentID: String!) {
@@ -20,7 +20,7 @@ const GET_USER_ID = gql`
 			studentType
 			appointmentList {
 				checkupType
-				appoinmentDate
+				appointmentDate
 				appointmentStartTime
 				doctorID {
 					doctorName
@@ -36,7 +36,7 @@ const useStyles = makeStyles({
 		flexDirection: "column",
 		width: "50%",
 		position: "relative",
-		left: "25em",
+		// left: "25em",
 		justifyContent: "space-evenly",
 		alignItems: "center",
 		height: "25em",
@@ -134,7 +134,7 @@ function Search(props) {
 		});
 	};
 	return (
-		<Card variant="outlined" maxWidth="md" className={styles.container}>
+		<Card variant="outlined" className={styles.container}>
 			<form noValidate className={styles.form}>
 				<TextField
 					error={errorMsgs.showIDError}
@@ -158,28 +158,37 @@ function Search(props) {
 						{renderMonthList()}
 					</select>
 				</div>
-				{loading ? (
-					<Bounce color="#3036FF" />
-				) : (
-					<div
-						className={{ ...styles.selectDiv, height: "4em", position: "relative", top: "10em" }}>
-						<Button
-							style={{ marginRight: "1em" }}
-							onClick={submitInputID}
-							disableFocusRipple
-							color="primary"
-							variant="contained">
-							Search By ID
-						</Button>
-						<Button
-							onClick={submitInputMonth}
-							disableFocusRipple
-							color="primary"
-							variant="contained">
-							Search By Month
-						</Button>
-					</div>
-				)}
+				<div style={{ display: "flex", justifyContent: "center" }}>
+					{loading ? (
+						<div style={{ display: "flex", justifyContent: "center" }}>
+							<Bounce color="#3036FF" />
+						</div>
+					) : (
+						<div
+							className={{
+								...styles.selectDiv,
+								height: "4em",
+								position: "relative",
+								top: "10em",
+							}}>
+							<Button
+								style={{ marginRight: "1em" }}
+								onClick={submitInputID}
+								disableFocusRipple
+								color="primary"
+								variant="contained">
+								Search By ID
+							</Button>
+							<Button
+								onClick={submitInputMonth}
+								disableFocusRipple
+								color="primary"
+								variant="contained">
+								Search By Month
+							</Button>
+						</div>
+					)}
+				</div>
 			</form>
 		</Card>
 	);
