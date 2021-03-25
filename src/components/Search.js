@@ -1,11 +1,42 @@
+import { useLazyQuery, gql } from "@apollo/client";
+// import SearchResults from "./SearchResults";
+import { Bounce } from "react-activity";
 import { Button, Card, makeStyles, TextField, Typography } from "@material-ui/core";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import "react-activity/dist/react-activity.css";
+import { Redirect, withRouter } from "react-router";
+
+const GET_USER_ID = gql`
+	query($studentID: String!) {
+		findStudentID(studentID: $studentID) {
+			dateOfBirth
+			email
+			gender
+			hallOfResidence
+			phoneNumber
+			roomNumber
+			studentID
+			studentName
+			studentType
+			appointmentList {
+				checkupType
+				appoinmentDate
+				appointmentStartTime
+				doctorID {
+					doctorName
+				}
+			}
+		}
+	}
+`;
 
 const useStyles = makeStyles({
 	container: {
 		display: "flex",
 		flexDirection: "column",
-		width: "60%",
+		width: "50%",
+		position: "relative",
+		left: "25em",
 		justifyContent: "space-evenly",
 		alignItems: "center",
 		height: "25em",
@@ -33,11 +64,23 @@ const useStyles = makeStyles({
 		width: "10em",
 	},
 });
-function Search() {
+function Search(props) {
+	const { history } = props;
+	const [getUserIDData, { loading, data }] = useLazyQuery(GET_USER_ID, {
+		onCompleted: (d) => {
+			console.log(d.findStudentID);
+			if (d) {
+				history.push({ pathname: "/search-results", state: d.findStudentID });
+			}
+		},
+	});
+
+	useEffect(() => {}, [data]);
+
 	const styles = useStyles();
 	const [IDNumber, setIDNumber] = useState("");
 	const [month, setMonth] = useState("Month");
-	const [error, setErrorMgs] = useState({
+	const [errorMsgs, setErrorMgs] = useState({
 		showMonthError: false,
 		showIDError: false,
 		idErrorMsgs: "",
@@ -58,21 +101,25 @@ function Search() {
 		"December",
 	];
 	const submitInputID = () => {
-		setErrorMgs({ ...error, showIDError: false });
+		setErrorMgs({ ...errorMsgs, showIDError: false });
 		if (!IDNumber) {
-			setErrorMgs({ ...error, showIDError: true, idErrorMsgs: "Identification Number is required" });
+			setErrorMgs({
+				...errorMsgs,
+				showIDError: true,
+				idErrorMsgs: "Identification Number is required",
+			});
 			return;
 		}
 
 		if (IDNumber.length < 8) {
 			setErrorMgs({
-				...error,
+				...errorMsgs,
 				showIDError: true,
 				idErrorMsgs: "Incorrect ID number. Please check and try again",
 			});
+			return;
 		}
-		// console.log(IDNumber);
-		// console.log(month);
+		getUserIDData({ variables: { studentID: IDNumber } });
 	};
 
 	const submitInputMonth = () => {};
@@ -90,14 +137,14 @@ function Search() {
 		<Card variant="outlined" maxWidth="md" className={styles.container}>
 			<form noValidate className={styles.form}>
 				<TextField
-					error={error.showIDError}
-					helperText={error.showIDError ? error.idErrorMsgs : null}
+					error={errorMsgs.showIDError}
+					helperText={errorMsgs.showIDError ? errorMsgs.idErrorMsgs : null}
 					className={styles.textField}
 					value={IDNumber}
 					label="Search By Identification Number"
 					onChange={(e) => {
-						if (error.showIDError) {
-							setErrorMgs({ ...error, showIDError: false });
+						if (errorMsgs.showIDError) {
+							setErrorMgs({ ...errorMsgs, showIDError: false });
 						}
 						setIDNumber(e.target.value);
 					}}
@@ -111,22 +158,31 @@ function Search() {
 						{renderMonthList()}
 					</select>
 				</div>
-				<div className={{ ...styles.selectDiv, height: "4em" }}>
-					<Button
-						style={{ marginRight: "1em" }}
-						onClick={submitInputID}
-						disableFocusRipple
-						color="primary"
-						variant="contained">
-						Search By ID
-					</Button>
-					<Button onClick={submitInputMonth} disableFocusRipple color="primary" variant="contained">
-						Search By Month
-					</Button>
-				</div>
+				{loading ? (
+					<Bounce color="#3036FF" />
+				) : (
+					<div
+						className={{ ...styles.selectDiv, height: "4em", position: "relative", top: "10em" }}>
+						<Button
+							style={{ marginRight: "1em" }}
+							onClick={submitInputID}
+							disableFocusRipple
+							color="primary"
+							variant="contained">
+							Search By ID
+						</Button>
+						<Button
+							onClick={submitInputMonth}
+							disableFocusRipple
+							color="primary"
+							variant="contained">
+							Search By Month
+						</Button>
+					</div>
+				)}
 			</form>
 		</Card>
 	);
 }
 
-export default Search;
+export default withRouter(Search);

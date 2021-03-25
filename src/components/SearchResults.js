@@ -1,49 +1,64 @@
-import { Button, Container, makeStyles, Typography } from "@material-ui/core";
+import { Button, Card, makeStyles, Typography } from "@material-ui/core";
 import React from "react";
+import { gql, useMutation } from "@apollo/client";
 import { TypographyColor } from "./TypographyColor";
+import { withRouter } from "react-router";
+
+const CONFIRM_ARRIVAL = gql`
+	mutation($studentID: String!) {
+		confirmArrival(studentID: "12345678")
+	}
+`;
 
 const useStyles = makeStyles({
 	root: {
 		width: "70%",
+		position: "relative",
+		top: "2em",
 		display: "flex",
 		flexDirection: "column",
+		height: "50em",
 		border: "1px solid #F1F3F6",
 	},
-	div: { display: "flex", flexDirection: "row", margin: "5%", justifyContent: "space-between" },
+	div: { display: "flex", flexDirection: "row", margin: "4%", justifyContent: "space-between" },
 });
 
-function SearchResults() {
+function SearchResults(props) {
 	const classes = useStyles();
+	const personData = props.history.location.state;
+	const appointment = personData.appointmentList;
+	console.log(appointment);
+	const [confirmArrival, { data }] = useMutation(CONFIRM_ARRIVAL);
 
 	return (
-		<Container className={classes.root}>
+		<Card className={classes.root} variant="outlined">
 			<div className={classes.div}>
 				<Typography>Identification Number:</Typography>
-				<Typography>12345678</Typography>
+				<Typography>{personData?.studentID}</Typography>
 			</div>
 			<div className={classes.div}>
 				<Typography>Name</Typography>
-				<Typography>Lionel Messi</Typography>
+				<Typography>{personData?.studentName}</Typography>
 			</div>
 			<div className={classes.div}>
 				<Typography>Residence:</Typography>
-				<Typography>Akuaffo Hall</Typography>
+				<Typography>{personData?.hallOfResidence}</Typography>
 			</div>
 			<div className={classes.div}>
 				<Typography>Purpose</Typography>
-				<Typography>Medical Checkup</Typography>
+				<Typography>{personData?.studentID}</Typography>
 			</div>
 			<div className={classes.div}>
 				<Typography>Doctor:</Typography>
-				<Typography>Dr. Michael Frimpong</Typography>
+				<Typography>{personData?.studentID}</Typography>
 			</div>
 			<div className={classes.div}>
 				<Typography>Time:</Typography>
-				<Typography>9:00-10:00</Typography>
+				<Typography>{personData?.studentID}</Typography>
 			</div>
 			<div className={classes.div}>
 				<Typography>Office Number:</Typography>
-				<Typography>D12</Typography>
+				<Typography>{personData?.studentID}</Typography>
 			</div>
 			<div
 				style={{
@@ -82,8 +97,8 @@ function SearchResults() {
 					Confirm
 				</Button>
 			</div>
-		</Container>
+		</Card>
 	);
 }
 
-export default SearchResults;
+export default withRouter(SearchResults);
