@@ -24,6 +24,7 @@ const GET_USER_ID = gql`
 				appointmentStartTime
 				doctorID {
 					doctorName
+					officeNumber
 				}
 			}
 		}
@@ -36,7 +37,7 @@ const useStyles = makeStyles({
 		flexDirection: "column",
 		width: "50%",
 		position: "relative",
-		// left: "25em",
+		left: "30em",
 		justifyContent: "space-evenly",
 		alignItems: "center",
 		height: "25em",
@@ -67,8 +68,9 @@ const useStyles = makeStyles({
 function Search(props) {
 	const { history } = props;
 	const [getUserIDData, { loading, data }] = useLazyQuery(GET_USER_ID, {
+		// fetchPolicy: "no-cache",
 		onCompleted: (d) => {
-			console.log(d.findStudentID);
+			// console.log(d.findStudentID);
 			if (d) {
 				history.push({ pathname: "/search-results", state: d.findStudentID });
 			}
@@ -127,7 +129,7 @@ function Search(props) {
 	const renderMonthList = () => {
 		return months.map((item, index) => {
 			return (
-				<option style={{ height: "2em" }} value={index}>
+				<option key={item} style={{ height: "2em" }} value={index}>
 					{item}
 				</option>
 			);

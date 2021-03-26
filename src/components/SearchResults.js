@@ -1,5 +1,5 @@
 import { Button, Card, makeStyles, Typography } from "@material-ui/core";
-import React from "react";
+import React, { useState } from "react";
 import { gql, useMutation } from "@apollo/client";
 import "react-activity/dist/react-activity.css";
 import { Bounce } from "react-activity";
@@ -29,17 +29,16 @@ const useStyles = makeStyles({
 function SearchResults(props) {
 	const classes = useStyles();
 	const personData = props.history.location.state;
-	// const appointment = personData.appointmentList.sort();
-	// console.log(appointment);
+	const appointment = personData.appointmentList.sort((a, b) => b.appointmentDate - a.appointmentDate)[0];
+	const [disableButton, setdisableButton] = useState(false);
 	const [confirmArrival, { loading, data }] = useMutation(CONFIRM_ARRIVAL, {
 		onCompleted: (response) => {
-			console.log(response);
+			// console.log(response);
+			setdisableButton(true);
 		},
 	});
-
 	return (
 		<>
-			<img src={`${process.env.PUBLIC_URL}/medicalLogo.png`} width="5%" height="5%" alt="warining" />
 			<Card className={classes.root} variant="outlined">
 				<div className={classes.div}>
 					<Typography>Identification Number:</Typography>
@@ -55,19 +54,19 @@ function SearchResults(props) {
 				</div>
 				<div className={classes.div}>
 					<Typography>Purpose</Typography>
-					<Typography>{personData?.studentID}</Typography>
+					<Typography>{appointment?.checkupType}</Typography>
 				</div>
 				<div className={classes.div}>
 					<Typography>Doctor:</Typography>
-					<Typography>{personData?.studentID}</Typography>
+					<Typography>{appointment?.doctorID?.doctorName}</Typography>
 				</div>
 				<div className={classes.div}>
 					<Typography>Time:</Typography>
-					<Typography>{personData?.studentID}</Typography>
+					<Typography>{appointment?.appointmentStartTime}</Typography>
 				</div>
 				<div className={classes.div}>
 					<Typography>Office Number:</Typography>
-					<Typography>{personData?.studentID}</Typography>
+					<Typography>{appointment?.doctorID?.officeNumber}</Typography>
 				</div>
 				<div
 					style={{
@@ -107,13 +106,23 @@ function SearchResults(props) {
 						<Button
 							style={{ backgroundColor: "#FF0000", color: "#fff", marginLeft: "2em" }}
 							variant="contained"
+							onClick={() => props.history.push("/")}
 							disableElevation>
 							Back
 						</Button>
 						<Button
-							style={{ backgroundColor: "#07C759", color: "#fff", marginRight: "2em" }}
-							onClick={() => confirmArrival({ variables: { studentID: personData.studentID } })}
+							style={{
+								backgroundColor: disableButton ? "#C2CDD2" : "#07C759",
+								color: "#fff",
+								marginRight: "2em",
+							}}
+							onClick={() => {
+								confirmArrival({ variables: { studentID: personData.studentID } });
+								// setTimeout(() => {}, 2000);
+								props.history.push("/");
+							}}
 							variant="contained"
+							disabled={disableButton}
 							disableElevation>
 							Confirm
 						</Button>

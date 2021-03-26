@@ -1,4 +1,4 @@
-import { makeStyles, Container } from "@material-ui/core";
+// import { makeStyles } from "@material-ui/core";
 import "./App.css";
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 import Search from "./components/Search";
@@ -10,14 +10,15 @@ const client = new ApolloClient({
 	cache: new InMemoryCache(),
 });
 
-const useStyles = makeStyles({
-	root: { justifyContent: "center", alignItems: "center", display: "flex" },
-});
+// const useStyles = makeStyles({
+// 	root: { justifyContent: "center", alignItems: "center", display: "flex" },
+// });
 
 function App() {
-	const classes = useStyles();
+	// const classes = useStyles();
 	return (
 		<ApolloProvider client={client}>
+			<img src={`${process.env.PUBLIC_URL}/medicalLogo.png`} width="5%" height="5%" alt="warining" />
 			{/* <Container className={classes.root}> */}
 			<BrowserRouter>
 				<Switch>
