@@ -18,7 +18,7 @@ function App() {
 	// const classes = useStyles();
 	return (
 		<ApolloProvider client={client}>
-			<img src={`${process.env.PUBLIC_URL}/medicalLogo.png`} width="5%" height="5%" alt="warining" />
+			<img src={`${process.env.PUBLIC_URL}/medicalLogo.png`} width="5%" height="5%" alt="medicalLogo" />
 			{/* <Container className={classes.root}> */}
 			<BrowserRouter>
 				<Switch>
