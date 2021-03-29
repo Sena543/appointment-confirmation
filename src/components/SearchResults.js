@@ -31,7 +31,7 @@ function SearchResults(props) {
 	const personData = props.history.location.state;
 	const appointment = personData.appointmentList.sort((a, b) => b.appointmentDate - a.appointmentDate)[0];
 	const [disableButton, setdisableButton] = useState(false);
-	const [confirmArrival, { loading, data }] = useMutation(CONFIRM_ARRIVAL, {
+	const [confirmArrival, { loading: arrivalConfirmation, data }] = useMutation(CONFIRM_ARRIVAL, {
 		onCompleted: (response) => {
 			// console.log(response);
 			setdisableButton(true);
@@ -48,10 +48,10 @@ function SearchResults(props) {
 					<Typography>Name</Typography>
 					<Typography>{personData?.studentName}</Typography>
 				</div>
-				<div className={classes.div}>
+				{/* <div className={classes.div}>
 					<Typography>Residence:</Typography>
 					<Typography>{personData?.hallOfResidence}</Typography>
-				</div>
+				</div> */}
 				<div className={classes.div}>
 					<Typography>Purpose</Typography>
 					<Typography>{appointment?.checkupType}</Typography>
@@ -88,7 +88,7 @@ function SearchResults(props) {
 					</TypographyColor>
 				</div>
 
-				{loading ? (
+				{arrivalConfirmation ? (
 					<div style={{ position: "relative", left: "50%", top: "2em" }}>
 						<Bounce color="#3036FF" />
 					</div>
