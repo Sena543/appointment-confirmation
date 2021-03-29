@@ -5,8 +5,10 @@ import Search from "./components/Search";
 import SearchResults from "./components/SearchResults";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 
+const uri = "https://immense-savannah-88207.herokuapp.com";
 const client = new ApolloClient({
-	uri: "http://localhost:9000/",
+	// uri: "http://localhost:9000/",
+	uri,
 	cache: new InMemoryCache(),
 });
 
