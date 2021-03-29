@@ -12,12 +12,12 @@ const GET_USER_ID = gql`
 			dateOfBirth
 			email
 			gender
-			hallOfResidence
+			# hallOfResidence
 			phoneNumber
-			roomNumber
+			# roomNumber
 			studentID
 			studentName
-			studentType
+			# studentType
 			appointmentList {
 				checkupType
 				appointmentDate
@@ -70,7 +70,7 @@ function Search(props) {
 	const [getUserIDData, { loading, data }] = useLazyQuery(GET_USER_ID, {
 		// fetchPolicy: "no-cache",
 		onCompleted: (d) => {
-			// console.log(d.findStudentID);
+			console.log(d.findStudentID);
 			if (d) {
 				history.push({ pathname: "/search-results", state: d.findStudentID });
 			}
